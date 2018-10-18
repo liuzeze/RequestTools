@@ -80,7 +80,6 @@ public class ProgressView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        System.out.println("下载进度" + progress);
         if (progress != 0) {
             LinearGradient shader = new LinearGradient(0, 0, mMeasureSpec, 0, Color.BLUE, Color.RED, Shader.TileMode.CLAMP);
             mPaint.setShader(shader);
