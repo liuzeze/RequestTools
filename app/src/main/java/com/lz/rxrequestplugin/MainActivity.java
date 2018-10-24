@@ -1,6 +1,8 @@
 package com.lz.rxrequestplugin;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +19,16 @@ import com.lz.rxrequestlib.http.Transformer;
 import com.lz.rxrequestlib.download.DownParamBean;
 import com.lz.rxrequestlib.RxDownloadManager;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.FormElement;
+import org.jsoup.nodes.Node;
+import org.jsoup.select.Elements;
+
+import java.io.File;
+import java.util.List;
+
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 
@@ -28,14 +40,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button mBtCancle;
     private TextView mContent;
     private ProgressView mProgressBar;
-//    String url = "https://t.alipayobjects.com/L1/71/100/and/alipay_wap_main.apk";
+    //    String url = "https://t.alipayobjects.com/L1/71/100/and/alipay_wap_main.apk";
     String url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
+    private View mGetFileList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mGetFileList = findViewById(R.id.bt_jump);
         mToRequest = findViewById(R.id.bt_torequest);
         mBtDownLoad = findViewById(R.id.bt_download);
         mBtPause = findViewById(R.id.bt_pause);
@@ -46,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtPause.setOnClickListener(this);
         mBtCancle.setOnClickListener(this);
         mToRequest.setOnClickListener(this);
+        mGetFileList.setOnClickListener(this);
 
     }
 
@@ -84,6 +99,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 mContent.setText(gson.toJson(asJsonObject));
                             }
                         });
+                break;
+            case R.id.bt_jump:
+                Intent intent = new Intent(MainActivity.this, FileListActivity.class);
+                intent.putExtra("url", "");
+                startActivity(intent);
                 break;
             default:
                 break;
