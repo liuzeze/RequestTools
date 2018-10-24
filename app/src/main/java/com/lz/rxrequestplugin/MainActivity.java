@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.bt_jump:
                 Intent intent = new Intent(MainActivity.this, FileListActivity.class);
-                intent.putExtra("url", "");
+                intent.putExtra("url", "E:/Seafile");
                 startActivity(intent);
                 break;
             default:

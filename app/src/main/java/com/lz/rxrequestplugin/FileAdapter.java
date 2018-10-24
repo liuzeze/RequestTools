@@ -6,7 +6,6 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -15,19 +14,13 @@ import com.lz.rxrequestlib.RxRequestUtils;
 import com.lz.rxrequestlib.download.DownParamBean;
 
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.List;
 
 import io.reactivex.functions.Consumer;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * -----------作者----------日期----------变更内容-----
@@ -35,11 +28,11 @@ import okhttp3.Response;
  */
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder> {
 
-    private final Elements mLinks;
+    private final List<FileBean> mLinks;
     private final Activity mFileListActivity;
     private View mInflate;
 
-    public FileAdapter(Elements links, Activity fileListActivity) {
+    public FileAdapter(List<FileBean> links, Activity fileListActivity) {
         mLinks = links;
         mFileListActivity = fileListActivity;
     }
@@ -53,8 +46,35 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull final FileViewHolder viewHolder, int i) {
-        final Element element = mLinks.get(i);
-        final String href = element.attr("href");
+        final FileBean element = mLinks.get(i);
+
+        final File seafile = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "seafile" + File.separator + element.path);
+
+        viewHolder.mItemView.setText(element.name);
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (element.isFile) {
+                    if (!new File(seafile, element.name).exists()) {
+
+                        RxRequestUtils.downLoad(App.mBaseUrl + "down?downUrl=" + element.path, element.name, seafile.getAbsolutePath(),
+                                new Consumer<DownParamBean>() {
+                                    @Override
+                                    public void accept(@io.reactivex.annotations.NonNull DownParamBean downParamBean) {
+                                        viewHolder.mProgressView.setProgress(downParamBean.progress);
+                                    }
+                                });
+                    }
+                } else {
+
+                    Intent mIntent = new Intent(mFileListActivity, FileListActivity.class);
+                    mIntent.putExtra("url", element.path);
+                    mFileListActivity.startActivity(mIntent);
+                }
+            }
+        });
+
+      /*  final String href = element.attr("href");
         if (element.text().startsWith("Up To [/")) {
             viewHolder.mItemView.setText(element.text().replace("Up To", "上一页"));
         } else {
@@ -79,35 +99,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
                         return;
                     }
 
-                   /* final String value = href;
-                    OkHttpClient okHttpClient = new OkHttpClient();
-                    Request.Builder builder = new Request.Builder();
-                    builder.url(App.mBaseUrl + href);
-                    okHttpClient.newCall(builder.build()).enqueue(new Callback() {
-                        @Override
-                        public void onFailure(Call call, IOException e) {
 
-                        }
-
-                        @Override
-                        public void onResponse(Call call, Response response) throws IOException {
-                            response.body();
-                            if (!response.header("Content-Type").contains("text/html")) {
-                                RxRequestUtils.downLoad(response.request().url().toString(), element.text(), seafile.getAbsolutePath(),
-                                        new Consumer<DownParamBean>() {
-                                            @Override
-                                            public void accept(@io.reactivex.annotations.NonNull DownParamBean downParamBean) {
-                                                viewHolder.mProgressView.setProgress(downParamBean.progress);
-                                            }
-                                        });
-                            } else {
-
-                                Intent mIntent = new Intent(mFileListActivity, FileListActivity.class);
-                                mIntent.putExtra("url", value);
-                                mFileListActivity.startActivity(mIntent);
-                            }
-                        }
-                    });*/
 
                     if (href.endsWith(".apk") ||
                             href.endsWith(".docx") ||
@@ -137,7 +129,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
 
                 }
             });
-        }
+        }*/
     }
 
     @Override

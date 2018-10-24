@@ -1,7 +1,12 @@
 package com.lz.rxrequestplugin;
 
+import java.io.File;
+
 import io.reactivex.Observable;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Url;
 
 /**
@@ -14,6 +19,7 @@ public interface RequestApi {
     Observable<String> getNews();
 
 
-    @GET()
-    Observable<String> getFilelist(@Url String url);
+    @POST()
+    @FormUrlEncoded
+    Observable<String> getFilelist(@Url String url, @Field("path") String path);
 }
