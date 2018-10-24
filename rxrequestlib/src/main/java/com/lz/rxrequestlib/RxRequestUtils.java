@@ -6,8 +6,13 @@ import com.lz.rxrequestlib.download.DownLoadFactory;
 import com.lz.rxrequestlib.download.DownParamBean;
 import com.lz.rxrequestlib.http.HttpConfigFactory;
 import com.lz.rxrequestlib.http.RetrofitFactory;
+import com.lz.rxrequestlib.upload.UploadRetrofit;
 
+import java.io.File;
+
+import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
+import okhttp3.ResponseBody;
 
 /**
  * -----------作者----------日期----------变更内容-----
@@ -34,6 +39,7 @@ public class RxRequestUtils {
         HttpConfigFactory.getInstance().initConfig(context);
         RetrofitFactory.getInstance();
         DownLoadFactory.getInstance();
+        UploadRetrofit.getInstance();
     }
 
 
@@ -58,4 +64,12 @@ public class RxRequestUtils {
     public static void downLoadCancel(String url) {
         RxDownloadManager.getInstance().cancel(url);
     }
+
+    public static Observable<ResponseBody> uploadFile(String url, String file, String fileName) {
+        return UploadRetrofit.uploadImage(url,
+                file + File.separator + fileName);
+
+
+    }
+
 }

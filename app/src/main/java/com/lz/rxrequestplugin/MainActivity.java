@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -18,6 +19,7 @@ import com.lz.rxrequestlib.RxRequestUtils;
 import com.lz.rxrequestlib.http.Transformer;
 import com.lz.rxrequestlib.download.DownParamBean;
 import com.lz.rxrequestlib.RxDownloadManager;
+import com.lz.rxrequestlib.upload.UploadRetrofit;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -27,10 +29,16 @@ import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -56,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtCancle = findViewById(R.id.bt_cancle);
         mContent = findViewById(R.id.tv_content);
         mProgressBar = findViewById(R.id.ProgressBar);
+        findViewById(R.id.bt_upload).setOnClickListener(this);
         mBtDownLoad.setOnClickListener(this);
         mBtPause.setOnClickListener(this);
         mBtCancle.setOnClickListener(this);
@@ -66,9 +75,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
+        String file = Environment.getExternalStorageDirectory().getAbsolutePath()
+                + File.separator + "Download";
+        String fileName = "big_buck_bunny.mp4";
         switch (view.getId()) {
             case R.id.bt_download:
-                RxRequestUtils.downLoad(url, "", "",
+                RxRequestUtils.downLoad(url, fileName, file,
                         new Consumer<DownParamBean>() {
                             @Override
                             public void accept(@NonNull DownParamBean downParamBean) {
@@ -84,6 +96,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.bt_cancle:
                 RxRequestUtils.downLoadCancel(url);
+                break;
+            case R.id.bt_upload:
+                RxRequestUtils.uploadFile("http://172.17.151.210:8080/springUpload", file, fileName)
+                        .subscribe(new Consumer<ResponseBody>() {
+                            @Override
+                            public void accept(ResponseBody responseBody) throws Exception {
+                                try {
+                                    String string = responseBody.string();
+                                    Toast.makeText(MainActivity.this, string, Toast.LENGTH_SHORT).show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                Toast.makeText(MainActivity.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
 
                 break;
             case R.id.bt_torequest:

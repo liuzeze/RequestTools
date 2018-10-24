@@ -1,6 +1,8 @@
 package com.lz.rxrequestlib.upload;
 
 
+import com.lz.rxrequestlib.http.Transformer;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  *      version : 1.0
  * </pre>
  */
- class UploadRetrofit {
+ public class UploadRetrofit {
 
     private static UploadRetrofit instance;
     private Retrofit mRetrofit;
@@ -114,6 +116,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
                 .getInstance()
                 .getRetrofit()
                 .create(UploadFileApi.class)
-                .uploadFiles(uploadUrl, parts);
+                .uploadFiles(uploadUrl, parts)
+                .compose(Transformer.<ResponseBody>switchSchedulers());
     }
 }

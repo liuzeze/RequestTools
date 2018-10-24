@@ -36,6 +36,15 @@
             android:text="取消"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintLeft_toRightOf="@+id/bt_pause"
+            app:layout_constraintRight_toRightOf="@+id/bt_upload" />
+
+        <Button
+            android:id="@+id/bt_upload"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="上传"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintLeft_toRightOf="@+id/bt_cancle"
             app:layout_constraintRight_toRightOf="parent" />
 
         <com.lz.rxrequestplugin.ProgressView
