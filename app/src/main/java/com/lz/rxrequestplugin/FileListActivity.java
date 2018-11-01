@@ -1,5 +1,6 @@
 package com.lz.rxrequestplugin;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ public class FileListActivity extends AppCompatActivity {
     private String mUrl;
     private List<FileBean> mFiles = new ArrayList<>();
 
+    @SuppressLint("CheckResult")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,17 +45,11 @@ public class FileListActivity extends AppCompatActivity {
         RxRequestUtils
                 .create(RequestApi.class)
                 .getFilelist(mUrl+"/getFileList", getIntent().getStringExtra("url"))
-                .compose(Transformer.<String>switchSchedulers())
-                .subscribe(new Consumer<String>() {
+                .compose(Transformer.<List<FileBean>>switchSchedulers())
+                .subscribe(new Consumer<List<FileBean>>() {
                     @Override
-                    public void accept(String files) throws Exception {
-                        Gson gson=new Gson();
-
-
-                        Type type = new TypeToken<ArrayList<FileBean>>() {}.getType();
-
-                        mFiles=gson.fromJson(files, type);
-
+                    public void accept(List<FileBean> files) throws Exception {
+                        mFiles.addAll(files);
                         initRecyclerView();
 
                     }

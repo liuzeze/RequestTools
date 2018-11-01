@@ -1,6 +1,7 @@
 package com.lz.rxrequestplugin;
 
 import java.io.File;
+import java.util.List;
 
 import io.reactivex.Observable;
 import retrofit2.http.Field;
@@ -21,5 +22,5 @@ public interface RequestApi {
 
     @POST()
     @FormUrlEncoded
-    Observable<String> getFilelist(@Url String url, @Field("path") String path);
+    Observable<List<FileBean>> getFilelist(@Url String url, @Field("path") String path);
 }

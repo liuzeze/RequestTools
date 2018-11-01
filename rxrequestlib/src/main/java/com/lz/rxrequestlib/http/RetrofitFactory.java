@@ -1,5 +1,7 @@
 package com.lz.rxrequestlib.http;
 
+import com.lz.rxrequestlib.gson.GsonAdapter;
+
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -38,7 +40,7 @@ public class RetrofitFactory {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(SimpleXmlConverterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(GsonAdapter.buildGson()))
                 .baseUrl(configBuild.getBaseUrl())
                 .client(build);
 
