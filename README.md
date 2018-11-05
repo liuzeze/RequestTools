@@ -32,5 +32,28 @@
                             }
                         });
 ```
+
+## 文件上传
+```
+ RxRequestUtils.uploadFile("http://172.17.151.210:8080/springUpload", file, fileName)
+                        .subscribe(new Consumer<ResponseBody>() {
+                            @Override
+                            public void accept(ResponseBody responseBody) throws Exception {
+                                try {
+                                    String string = responseBody.string();
+                                    Toast.makeText(MainActivity.this, string, Toast.LENGTH_SHORT).show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                Toast.makeText(MainActivity.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+
+```
 ![image](https://github.com/liuzeze/RequestTools/blob/master/GIF.gif)  
 
